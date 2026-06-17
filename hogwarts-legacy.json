@@ -1,0 +1,65 @@
+{
+  "$schema_version": "1.0.0",
+  "game_id": "hogwarts-legacy",
+  "display_name": "Hogwarts Legacy New",
+  "rois": [
+    {
+      "name": "ROI 1",
+      "x": 0.2542991141219385,
+      "y": 0.7840593141797961,
+      "width": 0.4960917144346013,
+      "height": 0.1816496756255792,
+      "preprocessing": [
+        {
+          "type": "hsvFilter",
+          "ranges": [
+            {
+              "h_lower": 0.0,
+              "h_upper": 180.0,
+              "s_lower": 0.0,
+              "s_upper": 255.0,
+              "v_lower": 200.0,
+              "v_upper": 255.0
+            }
+          ]
+        },
+        {
+          "type": "morphClose",
+          "radius": 1
+        },
+        {
+          "type": "dilate",
+          "radius": 1
+        },
+        {
+          "type": "invert"
+        }
+      ],
+      "subtitle_detection": {
+        "signal": {
+          "mode": "hsv",
+          "ranges": [
+            {
+              "h_lower": 0.0,
+              "h_upper": 180.0,
+              "s_lower": 0.0,
+              "s_upper": 255.0,
+              "v_lower": 200.0,
+              "v_upper": 255.0
+            }
+          ]
+        },
+        "min_signal_pixels": 50,
+        "mask_accum_frames": 3,
+        "merge_window_ms": 5000,
+        "crop_to_text": true,
+        "text_crop_padding": 8,
+        "text_crop_min_line_pixels": 1
+      },
+      "strip_speaker_prefix": true
+    }
+  ],
+  "capture_target": {
+    "kind": "primary"
+  }
+}
