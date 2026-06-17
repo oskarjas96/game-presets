@@ -1,7 +1,8 @@
 {
   "$schema_version": "1.0.0",
+  "display_name": "Hogwarts Legacy",
   "game_id": "hogwarts-legacy",
-  "display_name": "Hogwarts Legacy New",
+  "version": "1.0.0",
   "rois": [
     {
       "name": "ROI 1",
