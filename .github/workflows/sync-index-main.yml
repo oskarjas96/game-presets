@@ -6,6 +6,7 @@ on:
     paths:
       - "presets/**"
       - "scripts/sync_index.py"
+      - "scripts/validate_index.py"
 
 concurrency:
   group: sync-index-main
@@ -32,6 +33,9 @@ jobs:
 
       - name: Regenerate index.json
         run: python scripts/sync_index.py
+
+      - name: Validate index.json schema
+        run: python scripts/validate_index.py --strict
 
       - name: Commit if changed
         run: |

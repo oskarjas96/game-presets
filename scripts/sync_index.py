@@ -9,14 +9,20 @@ Per-preset required fields (read from the preset JSON):
     - version
     - game_id
 
-Index entry shape:
+Index file shape:
     {
-        "id":           str,  # uuid4 hex, persisted by matching `path`
-        "display_name": str,
-        "version":      str,
-        "game_id":      str,
-        "path":         str,  # repo-relative posix path
-        "checksum":     str,  # blake3 hex of raw file bytes
+        "$schema_version": "1.0.0",
+        "presets": [
+            {
+                "id":           str,  # uuid4 hex, persisted by matching `path`
+                "display_name": str,
+                "version":      str,
+                "game_id":      str,
+                "path":         str,  # repo-relative posix path
+                "checksum":     str,  # blake3 hex of raw file bytes
+            },
+            ...
+        ],
     }
 
 Usage:
@@ -34,6 +40,8 @@ import sys
 import uuid
 from pathlib import Path
 from typing import Any
+
+SCHEMA_VERSION = "1.0.0"
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 PRESETS_DIR = REPO_ROOT / "presets"
@@ -108,10 +116,19 @@ def load_existing_index() -> dict[str, dict[str, Any]]:
         data = json.loads(text)
     except json.JSONDecodeError as e:
         raise SyncError(f"index.json is not valid JSON: {e}") from e
-    if not isinstance(data, list):
-        raise SyncError("index.json must be a top-level array")
+    entries: Any
+    if isinstance(data, dict):
+        if "presets" not in data:
+            raise SyncError("index.json is missing required 'presets' array")
+        if not isinstance(data["presets"], list):
+            raise SyncError("index.json 'presets' must be an array")
+        entries = data["presets"]
+    elif isinstance(data, list):
+        entries = data
+    else:
+        raise SyncError("index.json must be a top-level object or array")
     by_path: dict[str, dict[str, Any]] = {}
-    for entry in data:
+    for entry in entries:
         if not isinstance(entry, dict):
             raise SyncError("every index.json entry must be an object")
         path = entry.get("path")
@@ -171,7 +188,14 @@ def build_index() -> list[dict[str, Any]]:
 
 
 def render(entries: list[dict[str, Any]]) -> str:
-    return json.dumps(entries, indent=2, ensure_ascii=False) + "\n"
+    return (
+        json.dumps(
+            {"$schema_version": SCHEMA_VERSION, "presets": entries},
+            indent=2,
+            ensure_ascii=False,
+        )
+        + "\n"
+    )
 
 
 def write_index(entries: list[dict[str, Any]]) -> None:
@@ -212,7 +236,10 @@ def main(argv: list[str] | None = None) -> int:
         return 0
 
     write_index(entries)
-    print(f"wrote {INDEX_PATH.relative_to(REPO_ROOT).as_posix()} ({len(entries)} entries)")
+    print(
+        f"wrote {INDEX_PATH.relative_to(REPO_ROOT).as_posix()} "
+        f"({len(entries)} entries, schema_version={SCHEMA_VERSION})"
+    )
     return 0
 
 

@@ -1,10 +1,13 @@
-[
-  {
-    "id": "f5a37d94e81d46f3871608260d73f48b",
-    "display_name": "Hogwarts Legacy",
-    "version": "1.0.0",
-    "game_id": "hogwarts-legacy",
-    "path": "presets/hogwarts-legacy.json",
-    "checksum": "ae35db9db580d26b3481a5f479f082610fd451e7eea4d6ca9bf935ea70aab601"
-  }
-]
+{
+  "$schema_version": "1.0.0",
+  "presets": [
+    {
+      "id": "f5a37d94e81d46f3871608260d73f48b",
+      "display_name": "Hogwarts Legacy",
+      "version": "1.0.0",
+      "game_id": "hogwarts-legacy",
+      "path": "presets/hogwarts-legacy.json",
+      "checksum": "ae35db9db580d26b3481a5f479f082610fd451e7eea4d6ca9bf935ea70aab601"
+    }
+  ]
+}

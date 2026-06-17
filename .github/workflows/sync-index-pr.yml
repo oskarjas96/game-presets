@@ -6,6 +6,7 @@ on:
     paths:
       - "presets/**"
       - "scripts/sync_index.py"
+      - "scripts/validate_index.py"
       - "index.json"
 
 jobs:
@@ -24,3 +25,6 @@ jobs:
 
       - name: Verify index.json
         run: python scripts/sync_index.py --check --diff
+
+      - name: Validate index.json schema
+        run: python scripts/validate_index.py --strict
